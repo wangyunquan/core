@@ -1,0 +1,30 @@
+server:
+    port: 9000
+    contextPath:
+
+spring:
+    profiles:
+        active: production
+
+    thymeleaf:
+        cache: true
+
+    jade4j:
+        caching: true
+
+    dataSource:
+      driverClassName: org.hibernate.dialect.MySQL5InnoDBDialect
+      url: jdbc:mysql://127.0.0.1/spring_blog?serverTimezone=UTC
+      username: root
+      password:741369
+
+    hibernate:
+      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+      hbm2ddl.auto: update
+      show_sql: true
+
+    redis:
+      host: localhost
+      port: 6379
+      default_expire_time: 86400
+

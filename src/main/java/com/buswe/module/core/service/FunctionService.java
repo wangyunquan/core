@@ -10,6 +10,6 @@ public interface FunctionService extends  BaseService<Function> {
 
     public List<TreeNode> getTreeData();
 
-
+public Boolean levelCodeUnique(String levelCode);
 
 }

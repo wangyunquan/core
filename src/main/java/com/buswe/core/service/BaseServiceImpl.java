@@ -1,14 +1,18 @@
 package com.buswe.core.service;
 
 import com.buswe.core.dao.jpa.BaseRepository;
+import com.buswe.core.domain.IdEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-public abstract class BaseServiceImpl<T> implements BaseService<T>{
+import java.util.Date;
+
+public abstract class BaseServiceImpl<T extends IdEntity> implements BaseService<T>{
 
     @Override
     public T save(T entity) {
+        entity.setUpdateDateTime(new Date());
         return repository().save(entity);
     }
 

@@ -1,7 +1,7 @@
 package com.buswe;
 
 import com.alibaba.druid.support.http.StatViewServlet;
-import freemarker.template.utility.XmlEscape;
+import com.buswe.core.web.FilterableHandlerMethodArgumentResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -9,14 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 
 import static com.buswe.Constants.ENV_DEVELOPMENT;
 import static com.buswe.Constants.ENV_PRODUCTION;
@@ -68,11 +62,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 //    }
     
 
-//    @Bean
-//    public FilterableHandlerMethodArgumentResolver filterableHandlerMethodArgumentResolver()
-//    {
-//    	return new FilterableHandlerMethodArgumentResolver();
-//    }
+    @Bean
+  public FilterableHandlerMethodArgumentResolver filterableHandlerMethodArgumentResolver()
+  {
+ 	return new FilterableHandlerMethodArgumentResolver();
+   }
     
     
 }

@@ -1,6 +1,7 @@
 package com.buswe.core.service;
 
 import com.buswe.core.dao.jpa.BaseRepository;
+import com.buswe.core.web.Filterable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,4 +20,6 @@ public   interface BaseService<T>
    BaseRepository<T, String> repository() ;
 
   public   Page<T> findAll(Specification<T> spec, Pageable pageable);
+
+  Page<T> findPage(Pageable page, Filterable filterable);
 }

@@ -95,7 +95,7 @@
             "processing": true,// 是否显示取数据时的那个等待提示
             "pagingType": "full_numbers",// 分页样式
             "language": { // 中文支持
-                "sUrl": basePath + "/resources/common/json/zh_CN.json"
+                "sUrl": basePath + "/json/zh_CN.json"
             },
             "displayLength": that.data.pageInfo.pageSize,// 每页记录条数，默认为10
             "serverSide": true,

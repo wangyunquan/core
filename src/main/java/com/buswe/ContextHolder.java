@@ -9,8 +9,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
-public class ContextHolder
-  implements ApplicationContextAware, DisposableBean
+public class ContextHolder implements ApplicationContextAware, DisposableBean
 {
   private static ApplicationContext applicationContext = null;
   private static Logger logger = LoggerFactory.getLogger(ContextHolder.class);

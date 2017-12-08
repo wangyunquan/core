@@ -1,7 +1,9 @@
 package com.buswe.core.service;
 
 import com.buswe.core.dao.jpa.BaseRepository;
+import com.buswe.core.dao.jpa.QueryHelper;
 import com.buswe.core.domain.IdEntity;
+import com.buswe.core.web.Filterable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -41,5 +43,11 @@ public abstract class BaseServiceImpl<T extends IdEntity> implements BaseService
 
    public abstract BaseRepository<T, String> repository() ;
 
+
+    public Page<T> findPage(Pageable page, Filterable filterable)
+    {
+        Specification<T> specification = QueryHelper.bySearchFilter(filterable.getFilters());
+        return repository().findAll(specification, page);
+    }
 
 }

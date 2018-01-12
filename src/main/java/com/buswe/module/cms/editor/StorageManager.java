@@ -1,19 +1,8 @@
 package com.buswe.module.cms.editor;
 
- 
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import org.apache.commons.io.FileUtils;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
 
 public class StorageManager {
 	public static final int BUFFER_SIZE = 8192;
@@ -48,7 +37,7 @@ public class StorageManager {
 
 	public static State saveFileByInputStream(InputStream is, String path,
 			long maxSize) {
-		State state  =new BaseState(true) ;
+		State state = null;
 
 		File tmpFile = getTmpFile();
 
@@ -71,8 +60,6 @@ public class StorageManager {
 				return new BaseState(false, AppInfo.MAX_SIZE);
 			}
 
-			state.putInfo( "size", tmpFile.length() );
-			state.putInfo( "title", tmpFile.getName() );
 			state = saveTmpFile(tmpFile, path);
 
 			if (!state.isSuccess()) {
@@ -87,20 +74,34 @@ public class StorageManager {
 	}
 
 	public static State saveFileByInputStream(InputStream is, String path) {
-		State state = new BaseState(true);
+		State state = null;
+
+		File tmpFile = getTmpFile();
+
+		byte[] dataBuf = new byte[ 2048 ];
+		BufferedInputStream bis = new BufferedInputStream(is, StorageManager.BUFFER_SIZE);
+
 		try {
-			Path pathnio = Paths.get(path);
-			Path parent = pathnio.getParent();
-			if (!Files.exists(parent))
-				Files.createDirectories(parent);
-		
-			Files.copy(is, Paths.get(path));
-			state.putInfo("size", Files.size(pathnio));
-			state.putInfo("title", new File(path).getName());
+			BufferedOutputStream bos = new BufferedOutputStream(
+					new FileOutputStream(tmpFile), StorageManager.BUFFER_SIZE);
+
+			int count = 0;
+			while ((count = bis.read(dataBuf)) != -1) {
+				bos.write(dataBuf, 0, count);
+			}
+			bos.flush();
+			bos.close();
+
+			state = saveTmpFile(tmpFile, path);
+
+			if (!state.isSuccess()) {
+				tmpFile.delete();
+			}
+
+			return state;
 		} catch (IOException e) {
-			return new BaseState(false, AppInfo.IO_ERROR);
 		}
-		return state;
+		return new BaseState(false, AppInfo.IO_ERROR);
 	}
 
 	private static File getTmpFile() {
@@ -111,25 +112,20 @@ public class StorageManager {
 
 	private static State saveTmpFile(File tmpFile, String path) {
 		State state = null;
-	//	File targetFile = new File(path);
-    path=path.substring(1);
-//		if (targetFile.canWrite()) {
-//			return new BaseState(false, AppInfo.PERMISSION_DENIED);
-//		}
+		File targetFile = new File(path);
+
+		if (targetFile.canWrite()) {
+			return new BaseState(false, AppInfo.PERMISSION_DENIED);
+		}
 		try {
-			Path pathnio=Paths.get(path);
-			Path parent =pathnio.getParent();
-			if(!Files.exists(parent))
-			Files.createDirectories(parent);
-	  Files.move(tmpFile.toPath(), Paths.get(path));
-		//	FileUtils.moveFile(tmpFile, targetFile);
-		 
+			FileUtils.moveFile(tmpFile, targetFile);
 		} catch (IOException e) {
 			return new BaseState(false, AppInfo.IO_ERROR);
 		}
 
 		state = new BaseState(true);
-		
+		state.putInfo( "size", targetFile.length() );
+		state.putInfo( "title", targetFile.getName() );
 		
 		return state;
 	}
@@ -146,27 +142,5 @@ public class StorageManager {
 		}
 
 		return new BaseState(true);
-	}
-	
-	public static State saveFileByMultipartFile(MultipartFile upfile, String physicalPath, long maxSize) {
-
-		if (upfile.getSize() > maxSize) {
-			return new BaseState(false, AppInfo.MAX_SIZE);
-		}
-		State state = new BaseState(true);
-		try {
-			String path = physicalPath;
-			Path pathnio = Paths.get(path);
-			Path parent = pathnio.getParent();
-			if (!Files.exists(parent))
-				Files.createDirectories(parent);
-			state.putInfo("size", upfile.getSize());
-			state.putInfo("title", upfile.getName());
-			Files.copy(upfile.getInputStream(), Paths.get(path));
-
-		} catch (IOException e) {
-			return new BaseState(false, AppInfo.IO_ERROR);
-		}
-		return state;
 	}
 }

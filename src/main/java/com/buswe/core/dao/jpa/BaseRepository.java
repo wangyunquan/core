@@ -10,14 +10,16 @@ import java.util.Collection;
 import java.util.List;
 
 @NoRepositoryBean
-public   interface BaseRepository<T, ID extends Serializable>
-  extends   JpaRepository<T, ID>, JpaSpecificationExecutor<T>
-{
+public interface BaseRepository<T, ID extends Serializable>
+        extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {
   public abstract EntityManager getEntityManager();
-  
+
   public abstract Class<T> getDomainClass();
-  
+
+
   public abstract List<T> findList(Collection<String> paramCollection);
-  
+
+
+
 
 }

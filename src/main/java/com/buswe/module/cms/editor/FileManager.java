@@ -1,14 +1,11 @@
 package com.buswe.module.cms.editor;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-
-import org.apache.commons.io.FileUtils;
-
- 
 
 public class FileManager {
 
@@ -68,7 +65,7 @@ public class FileManager {
 			}
 			file = (File)obj;
 			fileState = new BaseState( true );
-			fileState.putInfo( "url", "/"+file.toPath().toString().replace("\\", "/"));
+			fileState.putInfo( "url", PathFormat.format( this.getPath( file ) ) );
 			state.addState( fileState );
 		}
 		
@@ -79,8 +76,15 @@ public class FileManager {
 	private String getPath ( File file ) {
 		
 		String path = file.getAbsolutePath();
-		
-		return path.replace( this.rootPath, "/" );
+		boolean windows=System.getProperties().get("os.name").toString().toLowerCase().startsWith("win");
+		String temp_root=this.rootPath;
+        if (windows) {
+            temp_root=temp_root.replace("/", "\\");
+        }
+       /* System.out.println(path);
+        System.out.println(temp_root);
+        System.out.println("-----------------------------------------------");*/
+		return path.replace( temp_root, "/" );
 		
 	}
 	

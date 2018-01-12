@@ -1,13 +1,12 @@
 package com.buswe.module.cms.editor;
 
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.web.multipart.MultipartFile;
+import java.util.Map;
 
 public class Uploader {
 	private HttpServletRequest request = null;
 	private Map<String, Object> conf = null;
+
 	public Uploader(HttpServletRequest request, Map<String, Object> conf) {
 		this.request = request;
 		this.conf = conf;
@@ -21,7 +20,7 @@ public class Uploader {
 			state = Base64Uploader.save(this.request.getParameter(filedName),
 					this.conf);
 		} else {
-			 state=SpringUploader.save(this.request, this.conf);
+			state = BinaryUploader.save(this.request, this.conf);
 		}
 
 		return state;

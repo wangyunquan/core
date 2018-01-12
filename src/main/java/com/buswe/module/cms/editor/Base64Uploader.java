@@ -1,12 +1,10 @@
 package com.buswe.module.cms.editor;
 
- 
+
+
+import org.apache.commons.codec.binary.Base64;
 
 import java.util.Map;
-
-import org.apache.tomcat.util.codec.binary.Base64;
-
- 
 
 public final class Base64Uploader {
 

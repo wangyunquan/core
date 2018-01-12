@@ -1,0 +1,36 @@
+<#macro showPage page params>
+    <#assign step=5/>
+    <#assign currentPage=(page.number+1)/>
+    <div class="pagination pagination-centered">
+        <ul>
+            <#if page.hasContent()>
+                <#assign begin = currentPage - ((step - 1) / 2)/>
+                <#if (begin<=0)>
+                <#assign begin=1/>
+            </#if>
+            <#assign end = currentPage + ((step - 1) / 2)/>
+            <#if (end<step)>
+            <#assign end=step/>
+            </#if>
+            <#if (end>page.totalPages)>
+                <#assign end=page.totalPages/>
+            </#if>
+
+            <#if page.hasPrevious()>
+                <li><a  class="" href="?p=${currentPage-1}&${params}">上一页</a></li>
+            </#if>
+            <#if (page.totalPages>1)>
+                <li><a href="?p=1&${params}" class="page-numbers">1</a><span class="page-numbers dots">...</span></li>
+            </#if>
+            <#if (page.totalPages>1)>
+                <#list begin..end as p>
+                    <li class="<#if p==currentPage> active</#if>"><a href="?p=${p}&${params}">${p}</a></li>
+                </#list>
+            </#if>
+            <#if  page.hasNext()>
+                <li><a  class="" href="?p=${currentPage+1}&${params}">下一页</a></li>
+            </#if>
+            </#if>
+        </ul>
+    </div>
+</#macro>

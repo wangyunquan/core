@@ -4,17 +4,17 @@ import com.buswe.core.dao.jpa.BaseRepository;
 import com.buswe.core.dao.jpa.QueryHelper;
 import com.buswe.core.domain.IdEntity;
 import com.buswe.core.web.Filterable;
+import org.apache.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.Date;
-
 public abstract class BaseServiceImpl<T extends IdEntity> implements BaseService<T>{
 
+    protected Logger log = Logger.getLogger(this.getClass());
     @Override
     public T save(T entity) {
-        entity.setUpdateDateTime(new Date());
+
         return repository().save(entity);
     }
 

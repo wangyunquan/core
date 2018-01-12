@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.Set;
 @Entity
 @Table(name = "cms_article")
-
 @Indexed //hibernate search
 @Analyzer(impl=HanLPIndexAnalyzer.class)
 public class Article extends AuditableEntity {
@@ -21,16 +20,19 @@ public class Article extends AuditableEntity {
      * 标题
      */
     @Field(index= Index.YES, analyze= Analyze.YES, store= Store.YES)
+    @Column
     private String articleTitle;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="article_categoryid", nullable=false)
+    @JoinColumn(name="article_categoryid")
     private Category category;
 
     @Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
+    @Column
     private String websiteid;
 
     @Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
+    @Column
     private Boolean articlePrivate;
 
     @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="article")
@@ -54,37 +56,47 @@ public class Article extends AuditableEntity {
     /**
      * 标题图
      */
+    @Column
     private String headpic;
     /**
      * 关键字
      */
+    @Column
     private String keyword;
     /**
      * 永久链接
      */
+    @Column
     private String permalink;
     /**
      * 点击量
      */
+    @Column
     private Integer hits = 0;
     /**
      * 文章来源
      */
+    @Column
     private String source;
     /**
      * 权重
      */
+    @Column
     private String weight;
     /**
      * 置顶
      */
+    @Column
     private Boolean top;
 
     /**
      * 允许评论
      */
+    @Column
     private Boolean allowComment;
+    @Column
     private Short articleStatus;
+    @Column
     private Integer articleViewcount;
 
 

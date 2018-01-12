@@ -9,9 +9,9 @@ import com.buswe.module.core.pojo.ResultCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -24,25 +24,23 @@ public class CategoryController {
     /**
      * 列表
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/list")
-    private String list() {
-        return "base/cms/cat_list";
-    }
-
-    @RequestMapping( value = "/loaddata")
-    @ResponseBody
-    private  Page<Category>  page(Pageable page, Filterable filterable) {
+    @RequestMapping(value = "/list")
+    private String page(Pageable page, Filterable filterable, Model model) {
         Page<Category> result= this.categoryService.findPage(page, filterable);
-        return result;
+        model.addAttribute("page",result);
+        return "/cms/cat_list";
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/get")
-    @ResponseBody
-    private Category getUser(String id) {
 
-        return categoryService.get(id );
+    @RequestMapping(value = "/input")
+
+    public String getcat(String id,Model model) {
+        model.addAttribute("entity",categoryService.get(id ));
+        return "base/cms/cat";
     }
-    @RequestMapping(method = RequestMethod.POST, value = "/delete/{id}")
+
+
+    @RequestMapping( value = "/delete/{id}")
     @ResponseBody
     private Result deleteUser(@PathVariable("id") String id) {
         try {
@@ -51,6 +49,15 @@ public class CategoryController {
             return new Result(false);
         }
         return new Result(ResultCode.SUCCESS);
+    }
+
+    @RequestMapping(value = "/save")
+    public String addcat(Category category)
+    {
+
+        categoryService.save(category);
+
+        return "redirect:list";
     }
 
 }

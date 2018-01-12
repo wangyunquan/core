@@ -14,11 +14,13 @@ import java.security.Principal;
 public class LoginController {
     @RequestMapping("signin")
     public String signin(Principal principal, RedirectAttributes ra) {
+
         return principal == null ? "login" : "redirect:/";
     }
     @RequestMapping("admin/main")
     public  String main(Principal principal,HttpServletRequest request)
     {
+
         return "main";
     }
     @RequestMapping("admin/homepage")

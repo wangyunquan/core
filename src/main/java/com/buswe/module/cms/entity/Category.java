@@ -13,9 +13,13 @@ import java.util.Set;
 @Table(name = "cms_category")
 
 public class Category extends AuditableEntity{
+    @Column
     private String categoryName;
+    @Column
     private String categoryRemark;
+    @Column
     private String categoryWebsiteid;
+    @Column
     private Integer categoryPosition;
     @OneToMany(cascade= CascadeType.ALL, fetch= FetchType.LAZY, mappedBy="category")
     private Set<Article> articles = new HashSet<Article>(0);

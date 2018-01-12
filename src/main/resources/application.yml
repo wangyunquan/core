@@ -31,7 +31,11 @@ spring:
       expose-request-attributes: true
       expose-session-attributes: true
 
-
+    http:
+      multipart:
+        max-file-size: 100MB
+        max-request-size: 100MB
+        enabled: true
 
     redis:
       host: localhost

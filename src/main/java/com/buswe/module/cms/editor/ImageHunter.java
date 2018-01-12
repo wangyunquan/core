@@ -1,5 +1,12 @@
 package com.buswe.module.cms.editor;
 
+import com.buswe.module.cms.service.ResouceService;
+import com.buswe.module.cms.utils.CmsUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.context.ContextLoader;
+
+import javax.servlet.http.HttpServletRequest;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
@@ -8,15 +15,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
- 
-
 /**
  * 图片抓取器
  * @author hancong03@baidu.com
  *
  */
 public class ImageHunter {
-
+	private static Logger log =LoggerFactory.getLogger(ImageHunter.class);
 	private String filename = null;
 	private String savePath = null;
 	private String rootPath = null;
@@ -24,16 +29,16 @@ public class ImageHunter {
 	private long maxSize = -1;
 	
 	private List<String> filters = null;
-	
-	public ImageHunter ( Map<String, Object> conf ) {
-		
+	private HttpServletRequest req;
+	public ImageHunter ( Map<String, Object> conf ,HttpServletRequest p_req) {
 		this.filename = (String)conf.get( "filename" );
 		this.savePath = (String)conf.get( "savePath" );
 		this.rootPath = (String)conf.get( "rootPath" );
 		this.maxSize = (Long)conf.get( "maxSize" );
 		this.allowTypes = Arrays.asList( (String[])conf.get( "allowFiles" ) );
 		this.filters = Arrays.asList( (String[])conf.get( "filter" ) );
-		
+		this.req=p_req;
+		log.info("【图片抓取器】filename:{},savePath:{},rootPath:{}",filename,savePath,rootPath);
 	}
 	
 	public State capture ( String[] list ) {
@@ -47,9 +52,9 @@ public class ImageHunter {
 		return state;
 		
 	}
-
+	//捕获远程文件？
 	public State captureRemoteData ( String urlStr ) {
-		
+		log.info("捕获远程文件{}",urlStr);
 		HttpURLConnection connection = null;
 		URL url = null;
 		String suffix = null;
@@ -82,11 +87,17 @@ public class ImageHunter {
 			
 			String savePath = this.getPath( this.savePath, this.filename, suffix );
 			String physicalPath = this.rootPath + savePath;
-
+			log.info("savepath:{} ,physicalPath:{},type:{}",savePath,physicalPath,connection.getContentType().toString());
 			State state = StorageManager.saveFileByInputStream( connection.getInputStream(), physicalPath );
-			
-			if ( state.isSuccess() ) {
-				state.putInfo( "url", "/"+PathFormat.format( savePath ) );
+			String key =null;
+			ResouceService brs= ContextLoader.getCurrentWebApplicationContext().getBean(ResouceService.class);
+			try {
+				key=brs.uploadFile(physicalPath, CmsUtil.getLastSlashData(urlStr), connection.getContentType().toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if ( state.isSuccess()&&null!=key ) {
+				state.putInfo( "url", String.format("http://res.51so.info/%s", key) );//PathFormat.format( savePath )
 				state.putInfo( "source", urlStr );
 			}
 			
